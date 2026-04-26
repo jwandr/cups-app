@@ -546,7 +546,14 @@ export default function App() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000) }
 
-  const signIn = async () => { await supabase.auth.signInWithOtp({ email }); showToast('Magic link sent — check your email') }
+  const signInWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    })
+  }
   const signOut = async () => { await supabase.auth.signOut(); setSession(null) }
 
   const createActivity = async () => {
@@ -627,13 +634,9 @@ export default function App() {
           </div>
           <div className="auth-heading">Welcome back</div>
           <p className="auth-sub">Track the activities that replenish you.<br/>We'll help keep your cups full.</p>
-          <div className="field-wrap">
-            <span className="mi field-icon">mail</span>
-            <input className="auth-input" type="email" placeholder="your@email.com"
-              value={email} onChange={e => setEmail(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && signIn()}/>
-          </div>
-          <button className="btn-primary" onClick={signIn}>Send magic link</button>
+          <button className="btn-primary" onClick={signInWithGoogle}>
+  	    Continue with Google
+	  </button>
         </div>
       </div>
     </>
