@@ -7,7 +7,6 @@ import { supabase } from './lib/supabase'
 const GlobalStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap');
-    @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
