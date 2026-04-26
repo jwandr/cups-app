@@ -44,10 +44,21 @@ const GlobalStyle = () => (
     body { min-height: 100vh; background: var(--surface); }
 
     .mi {
-      font-family: 'Material Icons Round'; font-style: normal; font-weight: 400;
-      font-size: 20px; line-height: 1; letter-spacing: normal; white-space: nowrap;
-      display: inline-flex; align-items: center; user-select: none;
-    }
+  font-family: 'Material Icons Round';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
 
     /* AUTH */
     .auth-wrap {
@@ -658,7 +669,7 @@ export default function App() {
         {cups.length > 0 && (
           <div className="section">
             <div className="section-label">
-              <span className="mi" style={{fontSize:13}}>water_full</span>Your cups
+              <span className="mi">water_full</span>Your cups
             </div>
             <div className="cups-grid">
               {cups.map(cup => {
@@ -687,7 +698,7 @@ export default function App() {
         {suggestions.length > 0 && (
           <div className="section">
             <div className="section-label">
-              <span className="mi" style={{fontSize:13}}>auto_awesome</span>Recommended for you
+              <span className="mi">auto_awesome</span>Recommended for you
             </div>
             <div className="suggest-stack">
               {suggestions.map((s, i) => (
