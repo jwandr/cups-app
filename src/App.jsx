@@ -422,7 +422,7 @@ function WineGlassSVG({ color, pct }) {
   // Smooth bowl: wide at top, curves to a narrow point at bottom, no straight lines
   // Using cubic bezier: top-left (22,6) curves in to meet bottom centre (40,56),
   // and top-right (54,6) mirrors it — no kink because we don't use L commands in bowl
-  const bowlPath = "M22 6 C22 6 14 30 18 50 C20 54 28 58 40 58 C52 58 60 54 62 50 C66 30 54 6 54 6"
+  const bowlPath = "M22 6 C22 6 14 30 18 50 C20 54 28 58 40 58 C52 58 60 54 62 50 C66 30 56 6 58 6"
   const clipPath = "M22 6 C22 6 14 30 18 50 C20 54 28 58 40 58 C52 58 60 54 62 50 C66 30 54 6 54 6 Z"
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
@@ -431,7 +431,7 @@ function WineGlassSVG({ color, pct }) {
       {pct > 5 && <rect x="16" y={y} width="48" height="3" fill={color} opacity="0.4" clipPath={`url(#wg${color})`}/>}
       <path d={bowlPath} stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
       {/* rim — just the top line connecting the two sides */}
-      <line x1="22" y1="6" x2="54" y2="6" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="22" y1="6" x2="56" y2="6" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
       {/* stem */}
       <line x1="40" y1="58" x2="40" y2="84" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
       {/* base */}
