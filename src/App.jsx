@@ -31,6 +31,7 @@ const GlobalStyle = () => (
       --teal:       #00b4a6;
       --teal-light: #e0f7f5;
       --teal-dark:  #007d72;
+      --deepskyblue:#00bfff;
       --surface:    #f7f8fc;
       --card:       #ffffff;
       --border:     #eaecf4;
@@ -53,7 +54,7 @@ const GlobalStyle = () => (
 
     .mi {
       font-family: 'Material Symbols Rounded'; font-style: normal;
-      font-weight: normal; font-size: 20px; line-height: 1;
+      font-weight: normal; font-size: 26px; line-height: 1;
       letter-spacing: normal; white-space: nowrap; word-wrap: normal;
       direction: ltr; display: inline-flex; align-items: center;
       user-select: none; -webkit-font-smoothing: antialiased;
@@ -101,11 +102,11 @@ const GlobalStyle = () => (
     /* ── TOPBAR ── */
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 36px;
+      padding: 20px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px;
     }
     .wordmark { display: flex; align-items: center; gap: 10px; }
     .wordmark-icon {
-      width: 36px; height: 36px; background: var(--teal); border-radius: 10px;
+      width: 36px; height: 36px; background: var(--deepskyblue); border-radius: 10px;
       display: flex; align-items: center; justify-content: center; color: white;
     }
     .wordmark-text { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: -0.3px; }
@@ -118,7 +119,7 @@ const GlobalStyle = () => (
     .btn-ghost:hover { border-color: var(--ink-20); color: var(--ink-60); background: var(--ink-05); }
 
     /* ── GREETING ── */
-    .greeting { margin-bottom: 40px; }
+    .greeting { margin-bottom: 20px; }
     .greeting-h { font-size: 28px; font-weight: 700; color: var(--ink); letter-spacing: -0.6px; margin-bottom: 4px; }
     .greeting-sub { font-size: 14px; color: var(--ink-40); }
 
@@ -181,7 +182,7 @@ const GlobalStyle = () => (
     /* ── ACTIVITIES ── */
     .activity-list { display: flex; flex-direction: column; gap: 6px; }
     .activity-item {
-      display: flex; align-items: center; gap: 12px; padding: 13px 16px;
+      display: flex; align-items: center; gap: 12px; padding: 8px 10px;
       background: var(--card); border: 1.5px solid var(--border); border-radius: var(--r-md);
       transition: border-color var(--t), box-shadow var(--t);
     }
@@ -189,8 +190,8 @@ const GlobalStyle = () => (
     .activity-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     /* #2: left-aligned name */
     .activity-name { flex: 1; font-size: 14px; font-weight: 500; color: var(--ink); text-align: left; }
-    .activity-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-    .activity-chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+    .activity-chips { flex-wrap: wrap; gap: 4px; }
+    .activity-chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; white-space: nowrap; margin: 5px; }
     .activity-btns { display: flex; gap: 4px; }
     .icon-btn {
       width: 32px; height: 32px; border: none; border-radius: 8px;
@@ -217,7 +218,7 @@ const GlobalStyle = () => (
       background: var(--card); border: 1.5px solid var(--border);
       border-radius: var(--r-xl); padding: 28px;
     }
-    .create-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-top: 16px; }
+    .create-form { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
     .form-label { font-size: 11px; font-weight: 700; color: var(--ink-40); letter-spacing: 0.8px; text-transform: uppercase; }
     .form-input {
@@ -312,14 +313,14 @@ const GlobalStyle = () => (
     .btn-danger:hover { background: #fde8e8; border-color: #f87171; }
 
     /* cup editor pickers */
-    .color-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .color-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
     .color-swatch {
       width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
       border: 3px solid transparent; transition: all var(--t);
     }
     .color-swatch:hover { transform: scale(1.15); }
     .color-swatch.active { border-color: var(--ink); }
-    .icon-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .icon-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
     .icon-option {
       width: 40px; height: 40px; border-radius: var(--r-sm);
       border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
@@ -898,7 +899,7 @@ export default function App() {
         {/* TOPBAR */}
         <nav className="topbar">
           <div className="wordmark">
-            <div className="wordmark-icon"><span className="mi" style={{fontSize:18}}>local_cafe</span></div>
+            <div className="wordmark-icon"><span className="mi" style={{fontSize:24}}>specific_gravity</span></div>
             <span className="wordmark-text">Fill Your Cup</span>
           </div>
           <button className="btn-ghost" onClick={signOut}>
@@ -995,7 +996,7 @@ export default function App() {
                       Fills your {s.cup.name} · {Math.round((s.cup.current_level/s.cup.max_level)*100)}% full
                     </div>
                   </div>
-                  <span className="mi suggest-arrow">arrow_forward</span>
+                  <span className="mi suggest-arrow">add_circle</span>
                 </div>
               ))}
             </div>
@@ -1034,7 +1035,7 @@ export default function App() {
                   const pipColor = linkedCups[0]?.color || 'var(--ink-20)'
                   return (
                     <div key={a.id} className="activity-item">
-                      <div className="activity-pip" style={{background: pipColor}}/>
+                      
                       {/* #2: explicitly left-aligned */}
                       <div className="activity-name">{a.name}</div>
                       <div className="activity-chips">
@@ -1048,7 +1049,7 @@ export default function App() {
                       {/* #1: only run + edit, no delete button here */}
                       <div className="activity-btns">
                         <button className="icon-btn run" onClick={() => runActivity(a.id)} title="Log this">
-                          <span className="mi" style={{fontSize:18}}>play_circle</span>
+                          <span className="mi" style={{fontSize:24}}>add_circle</span>
                         </button>
                         <button className="icon-btn" onClick={() => startEdit(a)} title="Edit">
                           <span className="mi" style={{fontSize:17}}>edit</span>
@@ -1067,7 +1068,7 @@ export default function App() {
           <div className="create-card">
             <div className="section-head" style={{marginBottom:0}}>
               <div className="section-label">
-                <span className="mi" style={{fontSize:18}}>add_circle</span>Add an activity
+                <span className="mi" style={{fontSize:18}}>add_notes</span>Add an activity
               </div>
             </div>
             <div className="create-form">
@@ -1079,7 +1080,7 @@ export default function App() {
                   onKeyDown={e => { if (e.key === 'Enter') createActivity() }}/>
               </div>
               <div className="form-group">
-                <label className="form-label">Fills which cup?</label>
+                <label className="form-label">Fills which cup? (Add more in edit)</label>
                 <select className="form-input" value={selectedCupId}
                   onChange={e => setSelectedCupId(e.target.value)}>
                   <option value="">Select a cup…</option>
