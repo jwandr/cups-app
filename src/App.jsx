@@ -610,7 +610,7 @@ function rgba(hex, a) {
 }
 function greeting() {
   const h = new Date().getHours()
-  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
+  return h < 12 ? 'Good morning ☀️' : h < 17 ? 'Good afternoon ☕️' : 'Good evening 🍷'
 }
 function fmtDate(s) {
   return new Date(s).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
@@ -908,7 +908,7 @@ export default function App() {
 
         {/* GREETING */}
         <div className="greeting">
-          <div className="greeting-h">{greeting()} 👋</div>
+          <div className="greeting-h">{greeting()}</div>
           <div className="greeting-sub">
             {cups.length > 0
               ? `You have ${cups.length} cup${cups.length !== 1 ? 's' : ''} to tend to today.`
