@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from './lib/supabase'
 
 /* ── load fonts as real link tags ── */
@@ -83,7 +83,7 @@ const GlobalStyle = () => (
     .auth-input {
       width: 100%; padding: 14px 14px 14px 42px;
       border: 1.5px solid var(--border); border-radius: var(--r-sm);
-      font-family: 'Figtree', sans-serif; font-size: 15px; color: var(--ink);
+      font-family: 'Figtree', sans-serif; font-size: 16px; color: var(--ink);
       background: var(--ink-05); outline: none;
       transition: border-color var(--t), box-shadow var(--t), background var(--t);
     }
@@ -97,7 +97,7 @@ const GlobalStyle = () => (
     .btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,180,166,0.28); }
 
     /* ── SHELL ── */
-    .app-shell { max-width: 1040px; margin: 0 auto; padding: 0 24px 80px; }
+    .app-shell { max-width: 1040px; margin: 0 auto; padding: 0 24px 0px; }
 
     /* ── TOPBAR ── */
     .topbar {
@@ -128,7 +128,6 @@ const GlobalStyle = () => (
     .section-head {
       display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
     }
-    /* #2 fix: left-aligned, sentence case, larger */
     .section-label {
       font-size: 16px; font-weight: 600; letter-spacing: -0.1px;
       color: var(--ink); display: flex; align-items: center; gap: 8px;
@@ -138,28 +137,36 @@ const GlobalStyle = () => (
     .cups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
     .cup-card {
       background: var(--card); border-radius: var(--r-xl);
-      padding: 22px 18px 18px; border: 1.5px solid var(--border);
+      padding: 22px 18px 28px; border: 1.5px solid var(--border);
       cursor: pointer; transition: transform var(--t), box-shadow var(--t), border-color var(--t);
       position: relative; overflow: visible;
     }
     .cup-card:hover { transform: translateY(-4px); box-shadow: var(--sh-md); border-color: transparent; }
-    .cup-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
-    .cup-name { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; flex: 1; padding-right: 6px; }
+    /* fix #4: centre the name and pct */
+    .cup-card-top {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; margin-bottom: 14px; gap: 2px;
+    }
+    .cup-name { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
     .cup-pct { font-size: 13px; font-weight: 700; }
     .cup-vessel { display: flex; justify-content: center; margin-bottom: 12px; }
     .cup-track { height: 5px; background: var(--ink-10); border-radius: 99px; overflow: hidden; }
     .cup-fill { height: 100%; border-radius: 99px; transition: width 0.7s var(--ease); }
     .cup-meta { font-size: 11px; color: var(--ink-40); text-align: center; margin-top: 7px; }
-    /* #10: edit button always visible at bottom of card, not hover-only */
     .cup-edit-btn {
-      position: absolute; bottom: 5px; right: 10px;
-      width: 36px; height: 36px; border-radius: 50%;
+      position: absolute; bottom: 8px; right: 10px;
+      width: 28px; height: 28px; border-radius: 50%;
       background: var(--white); border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all var(--t); color: var(--ink-40);
       box-shadow: var(--sh-xs);
     }
     .cup-edit-btn:hover { background: var(--ink-05); border-color: var(--ink-20); color: var(--ink); }
+
+    /* ── VESSEL WRAPPER — fix #5: fixed height container so bowl doesn't resize modal ── */
+    .vessel-frame {
+      height: 100px; display: flex; align-items: center; justify-content: center;
+    }
 
     /* ── SUGGESTIONS ── */
     .suggest-stack { display: flex; flex-direction: column; gap: 8px; }
@@ -188,7 +195,6 @@ const GlobalStyle = () => (
     }
     .activity-item:hover { border-color: var(--ink-10); box-shadow: var(--sh-xs); }
     .activity-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    /* #2: left-aligned name */
     .activity-name { flex: 1; font-size: 14px; font-weight: 500; color: var(--ink); text-align: left; }
     .activity-chips { flex-wrap: wrap; gap: 4px; }
     .activity-chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; white-space: nowrap; margin: 5px; }
@@ -221,9 +227,10 @@ const GlobalStyle = () => (
     .create-form { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
     .form-label { font-size: 11px; font-weight: 700; color: var(--ink-40); letter-spacing: 0.8px; text-transform: uppercase; }
+    /* fix #7: font-size 16px prevents iOS zoom on focus */
     .form-input {
       padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--r-sm);
-      font-family: 'Figtree', sans-serif; font-size: 14px; color: var(--ink);
+      font-family: 'Figtree', sans-serif; font-size: 16px; color: var(--ink);
       background: var(--ink-05); outline: none;
       transition: border-color var(--t), box-shadow var(--t), background var(--t);
     }
@@ -238,7 +245,7 @@ const GlobalStyle = () => (
     .btn-add:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,180,166,0.28); }
     .btn-add:disabled { background: var(--ink-10); color: var(--ink-40); cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* ── CHECKBOX LIST (multi-cup selector) ── */
+    /* ── CHECKBOX LIST ── */
     .cup-checkbox-list { display: flex; flex-direction: column; gap: 6px; }
     .cup-checkbox-item {
       display: flex; align-items: center; gap: 10px; padding: 10px 12px;
@@ -290,6 +297,11 @@ const GlobalStyle = () => (
     .history-row:last-child { border-bottom: none; }
     .history-act { font-weight: 500; color: var(--ink); }
     .history-ts { font-size: 12px; color: var(--ink-40); }
+    /* fix #3: loading state for history */
+    .history-loading {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 24px 0; color: var(--ink-40); font-size: 14px;
+    }
     .modal-form { display: flex; flex-direction: column; gap: 16px; }
     .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
     .btn-outline {
@@ -331,7 +343,7 @@ const GlobalStyle = () => (
 
     /* ── TOAST ── */
     .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
       background: var(--ink); color: white; padding: 12px 20px; border-radius: var(--r-lg);
       font-size: 14px; font-weight: 500; box-shadow: var(--sh-lg); z-index: 2000;
       display: flex; align-items: center; gap: 8px;
@@ -343,10 +355,37 @@ const GlobalStyle = () => (
     }
     .empty { text-align:center; padding: 28px; color: var(--ink-40); font-size: 14px; }
 
+    /* ── fix #6: footer bar ── */
+    .app-footer {
+      bottom: 0; left: 0; right: 0;
+      background: var(--white); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 24px; z-index: 100;
+    }
+    .footer-inner {
+      max-width: 1040px; width: 100%; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-brand { font-size: 12px; color: var(--ink-40); }
+
+    /* ── INSTRUCTIONS MODAL ── */
+    .instructions-section { margin-bottom: 20px; }
+    .instructions-section h3 {
+      font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .instructions-section p, .instructions-section li {
+      font-size: 14px; color: var(--ink-60); line-height: 1.6;
+    }
+    .instructions-section ul { padding-left: 18px; }
+    .instructions-section li { margin-bottom: 4px; }
+
     @media (max-width: 600px) {
       .cups-grid { grid-template-columns: repeat(2, 1fr); }
       .create-form { flex-direction: column; }
       .modal { padding: 24px 20px; }
+      .sort-bar { gap: 4px; }
+      .sort-btn { padding: 4px 8px; font-size: 11px; }
     }
   `}</style>
 )
@@ -355,162 +394,145 @@ const GlobalStyle = () => (
    VESSEL SVGs
    ───────────────────────────────────────────────────────────────── */
 
-/* MUG — rim is an ellipse, not a flat rect, so no straight line at top */
+/* fix #1: MUG — proper clip path that follows the rounded bottom of the body */
 function MugSVG({ color, pct }) {
   const bodyTop = 18, bodyH = 62, filled = (pct / 100) * bodyH, y = bodyTop + bodyH - filled
+  const id = `m${color.replace('#','')}`
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
       <defs>
-        <clipPath id={`m${color}`}>
-          {/* clip matches body path so fill stays inside the curves */}
-          <path d="M12 18 Q12 80 40 80 Q68 80 68 80 L68 18 Q68 18 40 18 Q12 18 12 18 Z"/>
+        {/* clip follows the exact body outline: straight sides, rounded bottom */}
+        <clipPath id={id}>
+          <path d="M12 18 L12 72 Q12 82 40 82 Q68 82 68 72 L68 18 Z"/>
         </clipPath>
       </defs>
-      {/* liquid fill */}
-      <rect x="12" y={y} width="56" height={filled} fill={color} opacity="0.2" clipPath={`url(#m${color})`}/>
-      {filled > 4 && <rect x="12" y={y} width="56" height="3" fill={color} opacity="0.4" clipPath={`url(#m${color})`}/>}
-      {/* body — straight sides, rounded bottom */}
-      <path d="M12 18 L12 72 Q12 80 40 80 Q68 80 68 72 L68 18" stroke={color} strokeWidth="2.5" fill="none" strokeLinejoin="round"/>
-      {/* rim ellipse — sits on top of body, no straight line visible */}
+      {/* liquid fill — clipped to body shape */}
+      <rect x="12" y={y} width="56" height={filled + 2} fill={color} opacity="0.2" clipPath={`url(#${id})`}/>
+      {filled > 4 && <rect x="12" y={y} width="56" height="3" fill={color} opacity="0.4" clipPath={`url(#${id})`}/>}
+      {/* body */}
+      <path d="M12 18 L12 72 Q12 82 40 82 Q68 82 68 72 L68 18" stroke={color} strokeWidth="2.5" fill="none" strokeLinejoin="round"/>
+      {/* rim ellipse */}
       <ellipse cx="40" cy="18" rx="28" ry="5" fill={color} opacity="0.12"/>
       <ellipse cx="40" cy="18" rx="28" ry="5" stroke={color} strokeWidth="2" fill="none"/>
       {/* handle */}
       <path d="M68 32 C82 32 82 64 68 64" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
       {/* base shadow */}
-      <ellipse cx="40" cy="80" rx="28" ry="4" fill={color} opacity="0.1"/>
+      <ellipse cx="40" cy="82" rx="28" ry="4" fill={color} opacity="0.1"/>
     </svg>
   )
 }
 
-/* TEACUP — cup sits on the saucer (no gap), rim is ellipse only */
+/* TEACUP */
 function TeacupSVG({ color, pct }) {
-  // saucer at y=78, cup bottom at y=72 so it rests on it
   const bodyTop = 32, bodyBottom = 72, bodyH = bodyBottom - bodyTop
   const filled = (pct / 100) * bodyH, y = bodyBottom - filled
+  const id = `tc${color.replace('#','')}`
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
       <defs>
-        <clipPath id={`tc${color}`}>
+        <clipPath id={id}>
           <path d="M18 32 Q16 72 24 72 L54 72 Q62 72 60 32 Z"/>
         </clipPath>
       </defs>
-      {/* steam */}
       <path d="M30 20 Q32 14 30 8" stroke={color} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
       <path d="M40 18 Q42 12 40 6" stroke={color} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.25"/>
       <path d="M50 20 Q52 14 50 8" stroke={color} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.35"/>
-      {/* liquid */}
-      <rect x="18" y={y} width="42" height={filled} fill={color} opacity="0.2" clipPath={`url(#tc${color})`}/>
-      {/* cup body — tapers slightly, sits flush on saucer */}
+      <rect x="18" y={y} width="42" height={filled} fill={color} opacity="0.2" clipPath={`url(#${id})`}/>
       <path d="M18 32 Q16 72 24 72 L54 72 Q62 72 60 32" stroke={color} strokeWidth="2.5" fill="none"/>
-      {/* rim ellipse only — no separate line */}
       <ellipse cx="39" cy="32" rx="21" ry="5" fill={color} opacity="0.1"/>
       <ellipse cx="39" cy="32" rx="21" ry="5" stroke={color} strokeWidth="2" fill="none"/>
-      {/* handle */}
       <path d="M60 44 Q72 44 72 56 Q72 68 60 66" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none"/>
-      {/* saucer — cup bottom (y=72) sits right on top of saucer (y=72) */}
       <ellipse cx="39" cy="75" rx="30" ry="5.5" fill={color} opacity="0.12"/>
       <ellipse cx="39" cy="75" rx="30" ry="5.5" stroke={color} strokeWidth="2" fill="none"/>
-      {/* saucer inner ring */}
       <ellipse cx="39" cy="74" rx="14" ry="2.5" fill={color} opacity="0.08"/>
     </svg>
   )
 }
 
-/* WINE GLASS — smooth curved bowl using cubic bezier, no kink at base */
+/* WINE GLASS */
 function WineGlassSVG({ color, pct }) {
   const bowlTop = 6, bowlBottom = 56, bowlH = bowlBottom - bowlTop
   const filled = (pct / 100) * bowlH, y = bowlBottom - filled
-  // Smooth bowl: wide at top, curves to a narrow point at bottom, no straight lines
-  // Using cubic bezier: top-left (22,6) curves in to meet bottom centre (40,56),
-  // and top-right (54,6) mirrors it — no kink because we don't use L commands in bowl
+  const id = `wg${color.replace('#','')}`
   const bowlPath = "M22 6 C22 6 14 30 18 50 C20 54 28 58 40 58 C52 58 60 54 62 50 C66 30 56 6 58 6"
   const clipPath = "M22 6 C22 6 14 30 18 50 C20 54 28 58 40 58 C52 58 60 54 62 50 C66 30 54 6 54 6 Z"
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
-      <defs><clipPath id={`wg${color}`}><path d={clipPath}/></clipPath></defs>
-      <rect x="16" y={y} width="48" height={filled} fill={color} opacity="0.25" clipPath={`url(#wg${color})`}/>
-      {pct > 5 && <rect x="16" y={y} width="48" height="3" fill={color} opacity="0.4" clipPath={`url(#wg${color})`}/>}
+      <defs><clipPath id={id}><path d={clipPath}/></clipPath></defs>
+      <rect x="16" y={y} width="48" height={filled} fill={color} opacity="0.25" clipPath={`url(#${id})`}/>
+      {pct > 5 && <rect x="16" y={y} width="48" height="3" fill={color} opacity="0.4" clipPath={`url(#${id})`}/>}
       <path d={bowlPath} stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-      {/* rim — just the top line connecting the two sides */}
       <line x1="22" y1="6" x2="56" y2="6" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
-      {/* stem */}
       <line x1="40" y1="58" x2="40" y2="84" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
-      {/* base */}
       <line x1="22" y1="84" x2="58" y2="84" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
       <ellipse cx="40" cy="86" rx="18" ry="4" fill={color} opacity="0.1"/>
-      {/* shine */}
       <path d="M27 14 Q28 28 27 38" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4"/>
     </svg>
   )
 }
 
-/* BOWL — rim is ellipse, hide the flat line by covering with filled ellipse */
+/* BOWL */
 function BowlSVG({ color, pct }) {
   const maxH = 34, filled = (pct / 100) * maxH
+  const id = `bl${color.replace('#','')}`
   return (
     <svg width="80" height="84" viewBox="0 0 80 84" fill="none">
       <defs>
-        <clipPath id={`bl${color}`}>
+        <clipPath id={id}>
           <path d="M8 36 Q8 72 40 72 Q72 72 72 36 Z"/>
         </clipPath>
       </defs>
-      {/* liquid fill */}
-      <rect x="8" y={36 + maxH - filled} width="64" height={filled + 10} fill={color} opacity="0.2" clipPath={`url(#bl${color})`}/>
-      {/* bowl body */}
+      <rect x="8" y={36 + maxH - filled} width="64" height={filled + 10} fill={color} opacity="0.2" clipPath={`url(#${id})`}/>
       <path d="M8 36 Q8 72 40 72 Q72 72 72 36" stroke={color} strokeWidth="2.5" fill="none"/>
-      {/* rim ellipse — fills over the top of the path so no straight line shows */}
       <ellipse cx="40" cy="36" rx="32" ry="7" fill={color} opacity="0.12"/>
       <ellipse cx="40" cy="36" rx="32" ry="7" stroke={color} strokeWidth="2" fill="none"/>
-      {/* base ring */}
       <ellipse cx="40" cy="72" rx="13" ry="3" fill={color} opacity="0.18"/>
     </svg>
   )
 }
 
-/* HIGHBALL GLASS — straight tall glass (replaces old pint which had wrong icon) */
+/* fix #2: HIGHBALL — rounded bottom corners */
 function HighballSVG({ color, pct }) {
-  const top = 8, h = 72, filled = (pct / 100) * h, y = top + h - filled
+  const top = 8, h = 70, filled = (pct / 100) * h, y = top + h - filled
+  const id = `hb${color.replace('#','')}`
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
-      <defs><clipPath id={`hb${color}`}><rect x="18" y={top} width="44" height={h} rx="2"/></clipPath></defs>
-      {/* liquid */}
-      <rect x="18" y={y} width="44" height={filled} fill={color} opacity="0.22" clipPath={`url(#hb${color})`}/>
-      {filled > 4 && <rect x="18" y={y} width="44" height="3" fill={color} opacity="0.4" clipPath={`url(#hb${color})`}/>}
-      {/* body — perfectly straight sides */}
-      <path d="M18 8 L18 80 L62 80 L62 8" stroke={color} strokeWidth="2.5" fill="none" strokeLinejoin="round"/>
+      <defs>
+        {/* clip with rounded bottom to match body shape */}
+        <clipPath id={id}>
+          <path d="M18 8 L18 74 Q18 82 40 82 Q62 82 62 74 L62 8 Z"/>
+        </clipPath>
+      </defs>
+      <rect x="18" y={y} width="44" height={filled + 2} fill={color} opacity="0.22" clipPath={`url(#${id})`}/>
+      {filled > 4 && <rect x="18" y={y} width="44" height="3" fill={color} opacity="0.4" clipPath={`url(#${id})`}/>}
+      {/* body — straight sides, rounded bottom */}
+      <path d="M18 8 L18 74 Q18 82 40 82 Q62 82 62 74 L62 8" stroke={color} strokeWidth="2.5" fill="none" strokeLinejoin="round"/>
       {/* rim ellipse */}
       <ellipse cx="40" cy="8" rx="22" ry="4" fill={color} opacity="0.12"/>
       <ellipse cx="40" cy="8" rx="22" ry="4" stroke={color} strokeWidth="2" fill="none"/>
-      {/* base */}
-      <rect x="16" y="80" width="48" height="5" rx="2.5" fill={color} opacity="0.18"/>
-      {/* subtle reflection line */}
-      <line x1="24" y1="16" x2="24" y2="70" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.35"/>
+      {/* base shadow */}
+      <ellipse cx="40" cy="82" rx="22" ry="4" fill={color} opacity="0.1"/>
+      <line x1="24" y1="16" x2="24" y2="68" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.35"/>
     </svg>
   )
 }
 
-/* COCKTAIL GLASS — martini/cocktail shape to match local_bar icon */
+/* COCKTAIL GLASS */
 function CocktailSVG({ color, pct }) {
   const bowlH = 42, filled = (pct / 100) * bowlH
-  // V-shape bowl: wide at top (x=12 to x=68), meets at point (x=40,y=56)
+  const id = `ck${color.replace('#','')}`
   const clipPath = `M12 14 L40 56 L68 14 Z`
-  const y = 56 - filled  // fill rises from point up
+  const y = 56 - filled
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
-      <defs><clipPath id={`ck${color}`}><path d={clipPath}/></clipPath></defs>
-      {/* fill — triangle clip */}
-      <rect x="12" y={y} width="56" height={filled} fill={color} opacity="0.25" clipPath={`url(#ck${color})`}/>
-      {pct > 8 && <rect x="12" y={y} width="56" height="3" fill={color} opacity="0.4" clipPath={`url(#ck${color})`}/>}
-      {/* bowl — V shape */}
+      <defs><clipPath id={id}><path d={clipPath}/></clipPath></defs>
+      <rect x="12" y={y} width="56" height={filled} fill={color} opacity="0.25" clipPath={`url(#${id})`}/>
+      {pct > 8 && <rect x="12" y={y} width="56" height="3" fill={color} opacity="0.4" clipPath={`url(#${id})`}/>}
       <path d="M12 14 L40 56 L68 14" stroke={color} strokeWidth="2.5" strokeLinejoin="round" fill="none"/>
-      {/* rim */}
       <line x1="12" y1="14" x2="68" y2="14" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
-      {/* stem */}
       <line x1="40" y1="56" x2="40" y2="84" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
-      {/* base */}
       <line x1="24" y1="84" x2="56" y2="84" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
       <ellipse cx="40" cy="86" rx="16" ry="3.5" fill={color} opacity="0.1"/>
-      {/* olive garnish at top when >50% */}
       {pct > 50 && <circle cx="52" cy="14" r="4" fill={color} opacity="0.5"/>}
     </svg>
   )
@@ -519,10 +541,11 @@ function CocktailSVG({ color, pct }) {
 /* COFFEE TAKEAWAY */
 function CoffeeCupSVG({ color, pct }) {
   const top = 18, h = 58, filled = (pct / 100) * h, y = top + h - filled
+  const id = `cc${color.replace('#','')}`
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
-      <defs><clipPath id={`cc${color}`}><path d="M14 18 L18 76 Q18 80 40 80 Q62 80 62 76 L66 18 Z"/></clipPath></defs>
-      <rect x="14" y={y} width="52" height={filled} fill={color} opacity="0.2" clipPath={`url(#cc${color})`}/>
+      <defs><clipPath id={id}><path d="M14 18 L18 76 Q18 80 40 80 Q62 80 62 76 L66 18 Z"/></clipPath></defs>
+      <rect x="14" y={y} width="52" height={filled} fill={color} opacity="0.2" clipPath={`url(#${id})`}/>
       <path d="M14 18 L18 76 Q18 80 40 80 Q62 80 62 76 L66 18 Z" stroke={color} strokeWidth="2.5" fill="none"/>
       <rect x="12" y="12" width="56" height="10" rx="5" fill={color} opacity="0.15"/>
       <rect x="12" y="12" width="56" height="10" rx="5" stroke={color} strokeWidth="2" fill="none"/>
@@ -533,17 +556,17 @@ function CoffeeCupSVG({ color, pct }) {
   )
 }
 
-/* CHAMPAGNE FLUTE — smooth narrow shape, bubbles */
+/* CHAMPAGNE FLUTE */
 function FluteSVG({ color, pct }) {
   const top = 4, bowlH = 52, filled = (pct / 100) * bowlH, y = top + bowlH - filled
-  // Smooth flute: slightly wider at top, tapers to narrow base using curves
+  const id = `fl${color.replace('#','')}`
   const flutePath = "M30 4 C28 20 26 40 28 56 Q28 60 40 60 Q52 60 52 56 C54 40 52 20 50 4"
   const fluteClip = "M30 4 C28 20 26 40 28 56 Q28 60 40 60 Q52 60 52 56 C54 40 52 20 50 4 Z"
   return (
     <svg width="80" height="96" viewBox="0 0 80 96" fill="none">
-      <defs><clipPath id={`fl${color}`}><path d={fluteClip}/></clipPath></defs>
-      <rect x="26" y={y} width="28" height={filled} fill={color} opacity="0.28" clipPath={`url(#fl${color})`}/>
-      {pct > 5 && <rect x="26" y={y} width="28" height="3" fill={color} opacity="0.5" clipPath={`url(#fl${color})`}/>}
+      <defs><clipPath id={id}><path d={fluteClip}/></clipPath></defs>
+      <rect x="26" y={y} width="28" height={filled} fill={color} opacity="0.28" clipPath={`url(#${id})`}/>
+      {pct > 5 && <rect x="26" y={y} width="28" height="3" fill={color} opacity="0.5" clipPath={`url(#${id})`}/>}
       {pct > 20 && <>
         <circle cx="35" cy={y + filled * 0.7} r="1.5" fill={color} opacity="0.5"/>
         <circle cx="40" cy={y + filled * 0.4} r="1" fill={color} opacity="0.4"/>
@@ -558,30 +581,28 @@ function FluteSVG({ color, pct }) {
   )
 }
 
-/* Vessel router */
 function Vessel({ icon, color, pct }) {
   const c = color || '#00b4a6'
   const p = Math.min(100, Math.max(0, Math.round(pct)))
   switch ((icon || '').toLowerCase()) {
-    case 'teacup':                        return <TeacupSVG   color={c} pct={p}/>
+    case 'teacup':                        return <TeacupSVG    color={c} pct={p}/>
     case 'wine':                          return <WineGlassSVG color={c} pct={p}/>
-    case 'glass':                         return <HighballSVG color={c} pct={p}/>
-    case 'bowl':                          return <BowlSVG     color={c} pct={p}/>
-    case 'pint':                          return <CocktailSVG color={c} pct={p}/>
+    case 'glass':                         return <HighballSVG  color={c} pct={p}/>
+    case 'bowl':                          return <BowlSVG      color={c} pct={p}/>
+    case 'pint':                          return <CocktailSVG  color={c} pct={p}/>
     case 'coffee': case 'takeaway':       return <CoffeeCupSVG color={c} pct={p}/>
-    case 'flute': case 'champagne':       return <FluteSVG    color={c} pct={p}/>
-    default:                              return <MugSVG      color={c} pct={p}/>
+    case 'flute': case 'champagne':       return <FluteSVG     color={c} pct={p}/>
+    default:                              return <MugSVG       color={c} pct={p}/>
   }
 }
 
-/* Material Symbol name per vessel — #6/#7 fixes: glass→liquor, pint→local_bar (cocktail) */
 function vesselIcon(icon) {
   switch ((icon || '').toLowerCase()) {
     case 'teacup':                  return 'emoji_food_beverage'
     case 'wine':                    return 'wine_bar'
-    case 'glass':                   return 'local_drink'      // highball glass icon
+    case 'glass':                   return 'local_drink'
     case 'bowl':                    return 'soup_kitchen'
-    case 'pint':                    return 'local_bar'        // cocktail glass icon
+    case 'pint':                    return 'local_bar'
     case 'coffee': case 'takeaway': return 'coffee'
     case 'flute': case 'champagne': return 'celebration'
     default:                        return 'local_cafe'
@@ -615,6 +636,64 @@ function greeting() {
 }
 function fmtDate(s) {
   return new Date(s).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   INSTRUCTIONS MODAL  (fix #6)
+   ───────────────────────────────────────────────────────────────── */
+function InstructionsModal({ onClose }) {
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-top">
+          <div>
+            <div className="modal-title">
+              <span className="mi" style={{fontSize:20, color:'var(--teal)'}}>help</span>
+              How it works
+            </div>
+            <div className="modal-sub">Everything you need to know about Fill Your Cup</div>
+          </div>
+          <button className="btn-close" onClick={onClose}>
+            <span className="mi" style={{fontSize:18}}>close</span>
+          </button>
+        </div>
+
+        <div className="instructions-section">
+          <h3><span className="mi" style={{fontSize:16}}>water_full</span> Your cups</h3>
+          <p>Cups represent the areas of your life that need regular replenishment — things like Connection, Creativity, Rest, or Movement. Each cup has a level that rises when you do activities linked to it, and slowly depletes over time if you don't tend to it.</p>
+        </div>
+
+        <div className="instructions-section">
+          <h3><span className="mi" style={{fontSize:16}}>add_notes</span> Activities</h3>
+          <p>Activities are the things you do that fill your cups. Each activity can be linked to one or more cups. When you log an activity, the linked cups all fill up a little.</p>
+          <ul style={{marginTop:8}}>
+            <li>Add an activity using the form at the bottom of the page</li>
+            <li>Tap <strong>edit</strong> on any activity to rename it, change which cups it fills, or delete it</li>
+            <li>Use the sort buttons to order activities A–Z, by how often you do them, or shuffle for variety</li>
+          </ul>
+        </div>
+
+        <div className="instructions-section">
+          <h3><span className="mi" style={{fontSize:16}}>auto_awesome</span> Recommendations</h3>
+          <p>The <em>Recommended for you</em> section surfaces activities linked to your emptiest cups, so you always know where to focus your energy first.</p>
+        </div>
+
+        <div className="instructions-section">
+          <h3><span className="mi" style={{fontSize:16}}>add_circle</span> Logging an activity</h3>
+          <p>Tap the <strong>＋</strong> button next to any activity, or tap a recommendation card, to log it. Your cups will fill up accordingly. You can also tap any cup to see its full history.</p>
+        </div>
+
+        <div className="instructions-section">
+          <h3><span className="mi" style={{fontSize:16}}>edit</span> Managing cups</h3>
+          <p>Tap <strong>Add cup</strong> to create a new cup — choose a name, vessel type, colour, and max level. To edit or delete a cup, tap the small pencil icon on the cup card.</p>
+        </div>
+
+        <div style={{marginTop:8}}>
+          <button className="btn-fill" style={{width:'100%'}} onClick={onClose}>Got it</button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -663,7 +742,8 @@ function CupModal({ cup, onClose, onSave, onDelete, userId }) {
           <button className="btn-close" onClick={onClose}><span className="mi" style={{fontSize:18}}>close</span></button>
         </div>
         <div className="modal-form">
-          <div style={{display:'flex', justifyContent:'center', marginBottom:4}}>
+          {/* fix #5: vessel preview in fixed-height frame so modal doesn't resize */}
+          <div className="vessel-frame">
             <Vessel icon={icon} color={color} pct={60}/>
           </div>
           <div className="form-group">
@@ -724,10 +804,12 @@ export default function App() {
   const [cups, setCups] = useState([])
   const [activities, setActivities] = useState([])
   const [activityLinks, setActivityLinks] = useState([])
-  const [logCounts, setLogCounts] = useState({}) // activityId -> count, for sort
+  const [logCounts, setLogCounts] = useState({})
 
   const [selectedCup, setSelectedCup] = useState(null)
-  const [cupHistory, setCupHistory] = useState([])
+  // fix #3: separate loading state for cup history
+  const [cupHistoryLoading, setCupHistoryLoading] = useState(false)
+  const [cupHistory, setCupHistory] = useState(null) // null = not yet loaded
 
   const [cupModalOpen, setCupModalOpen] = useState(false)
   const [editingCup, setEditingCup] = useState(null)
@@ -739,10 +821,11 @@ export default function App() {
   const [editName, setEditName] = useState('')
   const [editCupIds, setEditCupIds] = useState([])
 
-  // #9: sort state
-  const [activitySort, setActivitySort] = useState('az') // 'az' | 'freq' | 'random'
-
+  const [activitySort, setActivitySort] = useState('az')
   const [toast, setToast] = useState(null)
+
+  // fix #6: instructions modal
+  const [showInstructions, setShowInstructions] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -763,7 +846,6 @@ export default function App() {
     setCups(cr.data || [])
     setActivities((ar.data || []).sort((a,b) => a.name.localeCompare(b.name)))
     setActivityLinks(lr.data || [])
-    // count logs per activity
     const counts = {}
     ;(lgr.data || []).forEach(l => { counts[l.activity_id] = (counts[l.activity_id] || 0) + 1 })
     setLogCounts(counts)
@@ -796,16 +878,28 @@ export default function App() {
     await reload(); showToast('Logged! Your cup is filling up ✓')
   }
 
+  /* fix #3: open modal immediately with loading state, fetch in background */
   const openCup = async (cup) => {
     setSelectedCup(cup)
+    setCupHistory(null)         // null = loading
+    setCupHistoryLoading(true)
+
     const { data: links } = await supabase.from('activity_cups').select('activity_id').eq('cup_id', cup.id)
     const ids = (links || []).map(l => l.activity_id)
-    if (!ids.length) { setCupHistory([]); return }
+
+    if (!ids.length) {
+      setCupHistory([])
+      setCupHistoryLoading(false)
+      return
+    }
+
     const { data: logs } = await supabase.from('logs')
       .select('id, created_at, activity_id, activities(name)')
       .in('activity_id', ids)
       .order('created_at', { ascending: false })
+
     setCupHistory(logs || [])
+    setCupHistoryLoading(false)
   }
 
   const startEdit = async (a) => {
@@ -830,7 +924,6 @@ export default function App() {
     setEditingActivity(null); await reload(); showToast('Activity updated')
   }
 
-  // #1: delete is now inside edit modal only
   const deleteActivity = async (id) => {
     await supabase.from('activity_cups').delete().eq('activity_id', id)
     await supabase.from('activities').delete().eq('id', id)
@@ -855,7 +948,6 @@ export default function App() {
     return cups.filter(c => ids.includes(c.id))
   }
 
-  // #9: sorted activities
   const sortedActivities = () => {
     const arr = [...activities]
     if (activitySort === 'az') return arr.sort((a,b) => a.name.localeCompare(b.name))
@@ -896,14 +988,14 @@ export default function App() {
       <GlobalStyle/>
       <div className="app-shell">
 
-        {/* TOPBAR */}
+        {/* TOPBAR — fix #6: sign out moved to footer, instructions button added */}
         <nav className="topbar">
           <div className="wordmark">
             <div className="wordmark-icon"><span className="mi" style={{fontSize:24}}>specific_gravity</span></div>
             <span className="wordmark-text">Fill Your Cup</span>
           </div>
-          <button className="btn-ghost" onClick={signOut}>
-            <span className="mi" style={{fontSize:16}}>logout</span>Sign out
+          <button className="btn-ghost" onClick={() => setShowInstructions(true)}>
+            <span className="mi" style={{fontSize:16}}>help_outline</span>How it works
           </button>
         </nav>
 
@@ -934,6 +1026,7 @@ export default function App() {
               const pct = Math.round((cup.current_level / cup.max_level) * 100)
               return (
                 <div key={cup.id} className="cup-card" onClick={() => openCup(cup)}>
+                  {/* fix #4: cup-card-top is now column + centred */}
                   <div className="cup-card-top">
                     <div className="cup-name">{cup.name}</div>
                     <div className="cup-pct" style={{color: cup.color}}>{pct}%</div>
@@ -945,7 +1038,6 @@ export default function App() {
                     <div className="cup-fill" style={{width:`${pct}%`, background: cup.color}}/>
                   </div>
                   <div className="cup-meta">{cup.current_level} / {cup.max_level}</div>
-                  {/* #10: edit button always visible, bottom-right of card */}
                   <button
                     className="cup-edit-btn"
                     onClick={e => { e.stopPropagation(); setEditingCup(cup); setCupModalOpen(true) }}
@@ -956,7 +1048,6 @@ export default function App() {
                 </div>
               )
             })}
-            {/* #8: only show add card when no cups yet */}
             {cups.length === 0 && (
               <div
                 style={{
@@ -964,8 +1055,7 @@ export default function App() {
                   padding:'22px 18px', border:'1.5px dashed var(--border)',
                   cursor:'pointer', display:'flex', flexDirection:'column',
                   alignItems:'center', justifyContent:'center',
-                  gap:8, minHeight:200, color:'var(--ink-40)',
-                  transition:'all var(--t)'
+                  gap:8, minHeight:200, color:'var(--ink-40)', transition:'all var(--t)'
                 }}
                 onClick={() => { setEditingCup(null); setCupModalOpen(true) }}
               >
@@ -1006,11 +1096,9 @@ export default function App() {
         {/* ── ACTIVITIES ── */}
         <div className="section">
           <div className="section-head">
-            {/* #2: left-aligned label */}
             <div className="section-label">
               <span className="mi" style={{fontSize:18}}>format_list_bulleted</span>Activities
             </div>
-            {/* #9: sort buttons */}
             <div className="sort-bar">
               <button className={`sort-btn${activitySort === 'az' ? ' active' : ''}`}
                 onClick={() => setActivitySort('az')}>A–Z</button>
@@ -1032,11 +1120,8 @@ export default function App() {
               <div className="activity-list">
                 {displayedActivities.map(a => {
                   const linkedCups = getCupsForActivity(a.id)
-                  const pipColor = linkedCups[0]?.color || 'var(--ink-20)'
                   return (
                     <div key={a.id} className="activity-item">
-                      
-                      {/* #2: explicitly left-aligned */}
                       <div className="activity-name">{a.name}</div>
                       <div className="activity-chips">
                         {linkedCups.map(cup => (
@@ -1046,7 +1131,6 @@ export default function App() {
                           </div>
                         ))}
                       </div>
-                      {/* #1: only run + edit, no delete button here */}
                       <div className="activity-btns">
                         <button className="icon-btn run" onClick={() => runActivity(a.id)} title="Log this">
                           <span className="mi" style={{fontSize:24}}>add_circle</span>
@@ -1099,7 +1183,7 @@ export default function App() {
 
       {/* ── CUP HISTORY MODAL ── */}
       {selectedCup && (
-        <div className="overlay" onClick={() => setSelectedCup(null)}>
+        <div className="overlay" onClick={() => { setSelectedCup(null); setCupHistory(null) }}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-top">
               <div>
@@ -1118,7 +1202,7 @@ export default function App() {
                   · {selectedCup.current_level} / {selectedCup.max_level}
                 </div>
               </div>
-              <button className="btn-close" onClick={() => setSelectedCup(null)}>
+              <button className="btn-close" onClick={() => { setSelectedCup(null); setCupHistory(null) }}>
                 <span className="mi" style={{fontSize:18}}>close</span>
               </button>
             </div>
@@ -1135,15 +1219,23 @@ export default function App() {
             </div>
             <div className="divider"/>
             <div style={{fontSize:13, fontWeight:600, color:'var(--ink-60)', marginBottom:8}}>Activity history</div>
-            {cupHistory.length === 0
-              ? <div className="empty" style={{padding:'16px 0'}}>Nothing logged yet — go fill this cup!</div>
-              : cupHistory.map(h => (
+
+            {/* fix #3: show loading spinner until data arrives, never shows stale data */}
+            {cupHistory === null ? (
+              <div className="history-loading">
+                <span className="mi" style={{fontSize:18, color:'var(--ink-20)'}}>hourglass_empty</span>
+                Loading…
+              </div>
+            ) : cupHistory.length === 0 ? (
+              <div className="empty" style={{padding:'16px 0'}}>Nothing logged yet — go fill this cup!</div>
+            ) : (
+              cupHistory.map(h => (
                 <div key={h.id} className="history-row">
                   <span className="history-act">{h.activities?.name}</span>
                   <span className="history-ts">{fmtDate(h.created_at)}</span>
                 </div>
               ))
-            }
+            )}
           </div>
         </div>
       )}
@@ -1198,11 +1290,8 @@ export default function App() {
                   })}
                 </div>
               </div>
-              {/* #1: delete button lives here in the edit modal */}
               <div className="modal-actions">
-                <button className="btn-danger" onClick={() => deleteActivity(editingActivity.id)}>
-                  Delete
-                </button>
+                <button className="btn-danger" onClick={() => deleteActivity(editingActivity.id)}>Delete</button>
                 <button className="btn-outline" onClick={() => setEditingActivity(null)}>Cancel</button>
                 <button className="btn-fill" onClick={saveEdit} disabled={!editName.trim()}>Save</button>
               </div>
@@ -1210,6 +1299,19 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ── INSTRUCTIONS MODAL (fix #6) ── */}
+      {showInstructions && <InstructionsModal onClose={() => setShowInstructions(false)}/>}
+
+      {/* ── FOOTER (fix #6: sign out moved here) ── */}
+      <div className="app-footer">
+        <div className="footer-inner">
+          <span className="footer-brand">Fill Your Cup</span>
+          <button className="btn-ghost" onClick={signOut}>
+            <span className="mi" style={{fontSize:16}}>logout</span>Sign out
+          </button>
+        </div>
+      </div>
 
       {/* ── TOAST ── */}
       {toast && (
